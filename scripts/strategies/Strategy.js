@@ -1,9 +1,11 @@
+const {Action} = require('../actions/Action');
+
 class Strategy {
 
-    constructor(globalStatus, mainLineup, substituteLineup, marketPlayers){
-        this.mainLineup = mainLineup;
-        this.substitueLineup = substituteLineup;
-        this.marketPlayers = marketPlayers;
+    constructor(globalStatus){
+        this.mainLineup = globalStatus.mainLineup;
+        this.substitueLineup = globalStatus.substituteLineup;
+        this.marketPlayers = globalStatus.marketPlayers;
         this.globalStatus = globalStatus;
         this.actions = [];
         this.goalkeeperList = [];
@@ -18,7 +20,8 @@ class Strategy {
         this.strikerList = [];
         this.substituteSrikerList = [];
         this.marketStrikerList = [];
-        this.fillLists()
+        this.temporalMoney = globalStatus.money;
+        this.fillLists();
     };
 
     executeActions(){
@@ -72,12 +75,31 @@ class Strategy {
             }
         });
     }
+   sorters = {
+        byPrice: (a, b) => {
+            return (b.price - a.price)
+        },
+       byPoints : (a, b) => {
+            return (b.points - a.points)
+       }
+    };
+
+    sortAllListBy(sorter){
+        this.goalkeeperList.sort(sorter);
+        this.substituteGoalkeeperList.sort(sorter);
+        this.marketGoalkeeperList.sort(sorter);
+        this.defenderList.sort(sorter);
+        this.substituteDefenderList.sort(sorter);
+        this.marketDefenderList.sort(sorter);
+        this.midFieldList.sort(sorter);
+        this.substituteMidFieldList.sort(sorter);
+        this.marketMidFieldList.sort(sorter);
+        this.strikerList.sort(sorter);
+        this.substituteSrikerList.sort(sorter);
+        this.marketStrikerList.sort(sorter);
+    }
 
 
 }
-
-
-
-
 
 module.exports = {Strategy};

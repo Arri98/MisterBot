@@ -11,6 +11,7 @@ let globalStatus = {
     substituteLineup: [],
     teamValue: 0,
     marketPlayers: [],
+    offers: [],
 }
 
 async function createBrowserAndExecute () {
