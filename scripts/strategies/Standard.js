@@ -9,17 +9,18 @@ const {Strategy} = require('./Strategy');
  */
 
 class Standard extends Strategy{
-    constructor(globalStatus) {
+    constructor(globalStatus, driver) {
         super(globalStatus);
         this.numberGoalKeepers = 1;
         this.numberDefenders = 3;
         this.numberMidfield = 4;
         this.numberStricker = 3;
+        this.driver = driver;
     }
     sellSubstitutes(list) {
         if(list.length > 1){
             for(let i = 1; i<list.length; i++){
-                let action = Action('sell',{name: list[i].name});
+                let action = Action('sell',{name: list[i].name, driver: this.driver});
                 this.actions.push(action);
             }
         }
@@ -35,8 +36,6 @@ class Standard extends Strategy{
                 let temp = listMain[i];
                 listMain[i] = listSub[j];
                 listSub[j] = temp;
-                let action = Action('substitute', {main: listMain[i].name, sub:listSub[j].name});
-                this.actions.push(action);
                 if((listSub.length-1) > j){
                     j++;
                 }else{
@@ -51,7 +50,7 @@ class Standard extends Strategy{
            if(listSub.length > 0){
                if(listSub[0].points < listMarket[0].points && (listMarket[0].price * 1.3) < this.temporalMoney){
                    this.temporalMoney -=  1.2*listMarket[0].price;
-                   let action = Action('sign', {name: listMarket[0].name, price: 1.2*listMarket[0].price});
+                   let action = Action('sign', {driver: this.driver, name: listMarket[0].name, price: 1.2*listMarket[0].price});
                    this.actions.push(action);
                    return;
                }
@@ -59,7 +58,7 @@ class Standard extends Strategy{
             else {
                 if((listMarket[0].price * 1.3) < this.temporalMoney) {
                    this.temporalMoney -=  1.2*listMarket[0].price;
-                   let action = Action('sign', {name: listMarket[0].name, price: 1.2*listMarket[0].price});
+                   let action = Action('sign', {driver: this.driver, name: listMarket[0].name, price: 1.2*listMarket[0].price});
                    this.actions.push(action);
                    return;
                }
@@ -72,7 +71,6 @@ class Standard extends Strategy{
         let positionsToSplice = 0;
         if(listMain.length < numberOfPlayers && listSub.length > 0){
             for(let i = 0; i < (numberOfPlayers - listMain.length); i++){
-                this.actions.push(Action('putToMain', {name: listSub[i].name}));
                 playersToPush.push(listSub[i]);
                 positionsToSplice++;
             }
@@ -82,7 +80,7 @@ class Standard extends Strategy{
         });
         for(let i = 0; i<positionsToSplice; i++){
             listSub.splice(0,1);
-        };
+        }
     }
 
     processOffers() {
@@ -90,7 +88,7 @@ class Standard extends Strategy{
             if(this.substituteGoalkeeperList.length > 1){
                 for(let i = 1; i < this.substituteGoalkeeperList.length; i++){
                     if(offer.name === this.substituteGoalkeeperList[i].name){
-                        this.actions.push(Action('acceptOffer', {...offer}))
+                        this.actions.push(Action('acceptOffer', {...offer, driver: this.driver}))
                         return;
                     }
                 }
@@ -98,7 +96,7 @@ class Standard extends Strategy{
             if(this.substituteDefenderList.length > 1){
                 for(let i = 1; i < this.substituteDefenderList.length; i++){
                     if(offer.name === this.substituteDefenderList[i].name){
-                        this.actions.push(Action('acceptOffer', {...offer}))
+                        this.actions.push(Action('acceptOffer', {...offer, driver: this.driver}))
                         return;
                     }
                 }
@@ -106,7 +104,7 @@ class Standard extends Strategy{
             if(this.substituteMidFieldList.length > 1){
                 for(let i = 1; i < this.substituteMidFieldList.length; i++){
                     if(offer.name === this.substituteMidFieldList[i].name){
-                        this.actions.push(Action('acceptOffer', {...offer}))
+                        this.actions.push(Action('acceptOffer', {...offer, driver: this.driver}))
                         return;
                     }
                 }
@@ -114,12 +112,12 @@ class Standard extends Strategy{
             if(this.substituteSrikerList.length > 1){
                 for(let i = 1; i < this.substituteSrikerList.length; i++){
                     if(offer.name === this.substituteSrikerList[i].name){
-                        this.actions.push(Action('acceptOffer', {...offer}))
+                        this.actions.push(Action('acceptOffer', {...offer,driver: this.driver }))
                         return;
                     }
                 }
             }
-            this.actions.push(Action('rejectOffer', {...offer}))
+            this.actions.push(Action('rejectOffer', {...offer, driver: this.driver }))
         })
     }
 
@@ -135,6 +133,7 @@ class Standard extends Strategy{
         this.interchangeSubAndMain(this.defenderList, this.substituteDefenderList);
         this.interchangeSubAndMain(this.midFieldList, this.substituteMidFieldList);
         this.interchangeSubAndMain(this.strikerList, this.substituteSrikerList);
+        this.actions.push(Action('setLineup', {lineup: this.globalStatus.mainLineup}));
         this.sellSubstitutes(this.substituteGoalkeeperList);
         this.sellSubstitutes(this.substituteDefenderList);
         this.sellSubstitutes(this.substituteMidFieldList);
