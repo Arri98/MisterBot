@@ -16,7 +16,8 @@ async function getTeam(driver) {
             let avg = await player.findElement(By.className('avg')).getAttribute('innerHTML');
             let position = await player.findElement(By.tagName('i')).getAttribute('class');
             position = position === 'pos-1'? 'Goalkeeper' : (position === 'pos-2'? 'Defender' : (position === 'pos-3'? 'Midfield' : (position === 'pos-4'? 'Striker' : null)));
-            let isInLineup = player.getAttribute('class').contains('in-lineup');
+            let playerClass = await player.getAttribute('class');
+            let isInLineup = playerClass.includes('in-lineup');
             const processedPlayer = {name: name.trim(), points, avg, position}
             if(isInLineup){
                 lineup.push(processedPlayer);

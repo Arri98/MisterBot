@@ -85,6 +85,9 @@ class Standard extends Strategy{
 
     processOffers() {
         this.globalStatus.offers.forEach(offer => {
+            if(offer === undefined){
+                return;
+            }
             if(this.substituteGoalkeeperList.length > 1){
                 for(let i = 1; i < this.substituteGoalkeeperList.length; i++){
                     if(offer.name === this.substituteGoalkeeperList[i].name){
@@ -132,8 +135,9 @@ class Standard extends Strategy{
         this.interchangeSubAndMain(this.goalkeeperList, this.substituteGoalkeeperList);
         this.interchangeSubAndMain(this.defenderList, this.substituteDefenderList);
         this.interchangeSubAndMain(this.midFieldList, this.substituteMidFieldList);
-        this.interchangeSubAndMain(this.strikerList, this.substituteSrikerList);
-        this.actions.push(Action('setLineup', {lineup: this.globalStatus.mainLineup}));
+        this.interchangeSubAndMain(this.midFieldList, this.substituteSrikerList);
+        let lineup = this.goalkeeperList.concat(this.defenderList.concat(this.midFieldList.concat(this.strikerList)))
+        this.actions.push(Action('setLineup', {driver: this.driver, lineup: lineup}));
         this.sellSubstitutes(this.substituteGoalkeeperList);
         this.sellSubstitutes(this.substituteDefenderList);
         this.sellSubstitutes(this.substituteMidFieldList);
@@ -160,9 +164,7 @@ class Standard extends Strategy{
         console.log(this.marketStrikerList);
         console.log("Offers");
         console.log(this.globalStatus.offers);
-
     }
-
 
 }
 

@@ -24,10 +24,12 @@ class Strategy {
         this.fillLists();
     };
 
-    executeActions(){
-        this.actions.forEach(action => {
-            action.execute();
-        })
+    async executeActions(){
+        for (const action of this.actions) {
+            console.log('Executing');
+           await action.execute();
+           console.log('Finished');
+        }
     }
 
     fillLists() {
