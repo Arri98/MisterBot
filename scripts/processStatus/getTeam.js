@@ -18,14 +18,22 @@ async function getTeam(driver) {
             position = position === 'pos-1'? 'Goalkeeper' : (position === 'pos-2'? 'Defender' : (position === 'pos-3'? 'Midfield' : (position === 'pos-4'? 'Striker' : null)));
             let playerClass = await player.getAttribute('class');
             let isInLineup = playerClass.includes('in-lineup');
-            const processedPlayer = {name: name.trim(), points, avg, position}
+            let price = await player.findElement(By.className('underName')).getAttribute('innerHTML');
+            price = price.split('>');
+            price = price[2] ? price[2].trim() : price[0];
+            let upwards = await player.findElements(By.className('value-arrow green'));
+            let upwardsValue = upwards.length > 0
+            const textUpward = upwardsValue ? 'up' : 'down';
+            let injured = !(await player.findElements(By.className('status')));
+            const injuredText = injured ? 'injured' : 'not injured';
+            const processedPlayer = {name: name.trim(), points, avg, position, injured, upwards: upwardsValue, price}
             if(isInLineup){
                 lineup.push(processedPlayer);
             }else {
                 substitutes.push(processedPlayer)
             }
 
-            console.log(`Found ${name} with ${points} points, ${avg} avg points and pos ${position}`);
+            console.log(`Found ${name} with ${points} points, ${avg} avg points. pos ${position}, ${injuredText}, and price ${price} going ${textUpward}`);
         }
         return {lineup, substitutes};
     } catch (e) {

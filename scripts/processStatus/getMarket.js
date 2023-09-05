@@ -17,8 +17,14 @@ async function getMarket(driver) {
             let owner = await player.findElement(By.className('date')).getAttribute('innerHTML');
             owner = owner.substring(5);
             position = position === 'pos-1'? 'Goalkeeper' : (position === 'pos-2'? 'Defender' : (position === 'pos-3'? 'Midfield' : (position === 'pos-4'? 'Goalkeeper' : null)))
-            console.log(`Market found ${name.trim()} with ${points} points, ${avg} avg points and pos ${position}`);
-            players.push({name, points, avg, position, owner})
+            let price = await player.getAttribute('data-price');
+            let upwards = await player.findElements(By.className('value-arrow green'));
+            let upwardsValue = upwards.length > 0
+            const textUpward = upwardsValue ? 'up' : 'down';
+            let injured = !(await player.findElements(By.className('status')));
+            const injuredText = injured ? 'injured' : 'not injured';
+            console.log(`Market found ${name.trim()} with ${points} points, ${avg} avg points, ${injuredText} , pos ${position} and price ${price} going ${textUpward}`);
+            players.push({name, points, avg, position, owner, injured, upwards: upwardsValue, price})
         }
         return players;
     } catch (e) {
