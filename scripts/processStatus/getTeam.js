@@ -1,4 +1,5 @@
 const { By, until } = require('selenium-webdriver');
+const {trimName} = require("../common/trimFunctions");
 
 let lineup = [];
 let substitutes = [];
@@ -12,6 +13,7 @@ async function getTeam(driver) {
         for (let i = 0; i < playerList.length; i++) {
             let player = playerList[i];
             let name = await player.findElement(By.className('name')).getAttribute('innerHTML');
+            name = trimName(name);
             let points = await player.findElement(By.className('points')).getAttribute('innerHTML');
             let avg = await player.findElement(By.className('avg')).getAttribute('innerHTML');
             let position = await player.findElement(By.tagName('i')).getAttribute('class');
@@ -21,12 +23,14 @@ async function getTeam(driver) {
             let price = await player.findElement(By.className('underName')).getAttribute('innerHTML');
             price = price.split('>');
             price = price[2] ? price[2].trim() : price[0];
+            price = price.split('.').join("");
             let upwards = await player.findElements(By.className('value-arrow green'));
             let upwardsValue = upwards.length > 0
             const textUpward = upwardsValue ? 'up' : 'down';
-            let injured = !(await player.findElements(By.className('status')));
+            let injured = await player.findElements(By.className('status'));
+            injured = injured.length > 0;
             const injuredText = injured ? 'injured' : 'not injured';
-            const processedPlayer = {name: name.trim(), points, avg, position, injured, upwards: upwardsValue, price}
+            const processedPlayer = {name, points, avg, position, injured, upwards: upwardsValue, price}
             if(isInLineup){
                 lineup.push(processedPlayer);
             }else {

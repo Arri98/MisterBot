@@ -5,6 +5,7 @@ function notifyInjury (players){
     players.forEach((player) => {
         console.log(player);
         if(player.injured){
+            console.log('Injured player');
             found = true;
             fs.writeFileSync('../Escritorio/lesion.txt', 'HAY LESIONADOS', err => {
                 if (err) {

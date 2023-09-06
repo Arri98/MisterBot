@@ -1,4 +1,5 @@
 const { By, until } = require('selenium-webdriver');
+const {trimName} = require("../common/trimFunctions");
 
 async function setLineup(driver, players) {
     try {
@@ -10,8 +11,8 @@ async function setLineup(driver, players) {
             let slot =  await driver.findElement(By.id(`slot-${i}`), 5000);
             slots.push(slot);
             let name = await slot.findElement(By.className('name')).getAttribute('innerHTML');
-            console.log(name);
-            currenPlayerNames.push(name.trim());
+            name = trimName(name);
+            currenPlayerNames.push(name);
         }
         let notInTeam = [];
         console.log('Lineup');
@@ -51,9 +52,9 @@ async function setLineup(driver, players) {
                 for (let j = 0; j < playerList.length; j++) {
                     let subPlayer = playerList[j];
                     let subName = await subPlayer.findElement(By.className('name')).getAttribute('innerHTML');
-                    if (notInTeam.includes(subName.trim())) {
-                        console.log('With ' + subName.trim());
-                        const index = notInTeam.indexOf(subName.trim());
+                    if (notInTeam.includes(trimName(name))) {
+                        console.log('With ' +trimName(name));
+                        const index = notInTeam.indexOf(trimName(name));
                         let subButton = await subPlayer.findElement(By.className('btn player'));
                         subButton.click();
                         notInTeam.splice(index, 1);

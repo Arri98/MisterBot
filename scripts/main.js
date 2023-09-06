@@ -4,7 +4,10 @@ const {getTeam} = require('./processStatus/getTeam');
 const {calendar} = require('./processStatus/calendar');
 const {getMarket} = require('./processStatus/getMarket');
 const {notifyInjury} = require('./notifications/injury');
+const {getMoney} = require('./processStatus/getMoney');
 const {Standard} = require('./strategies/Standard');
+const {MinMax} = require("./strategies/MinMax");
+const {processOffers} = require("./processStatus/processOffer");
 
 let globalStatus = {
     daysUntilNextRound: 0,
@@ -12,27 +15,34 @@ let globalStatus = {
     money: 0,
     mainLineup: [],
     substituteLineup: [],
-    teamValue: 0,
     marketPlayers: [],
     offers: [],
+    futureBalance: 0,
 };
 
 async function createBrowserAndExecute () {
     const driver = await createDriver();
+
     await logIn(driver);
+    globalStatus.money = await getMoney(driver);
+    const offers = await processOffers(driver);
+    globalStatus.offers = offers;
     const team = await getTeam(driver);
     const matchdays = await calendar(driver);
-    console.log(matchdays);
     globalStatus.mainLineup = team.lineup;
-    globalStatus.matchdays = matchdays;
     globalStatus.substituteLineup = team.substitutes;
+    globalStatus.matchdays = matchdays;
     notifyInjury(globalStatus.mainLineup);
-    /*
-    await getMarket(driver);
-    const strategy = new Standard(globalStatus, driver);
+    const marketResult = await getMarket(driver);
+    globalStatus.marketPlayers = marketResult.players;
+    globalStatus.futureBalance = marketResult.futureBalance;
+    console.log(globalStatus);
+    const strategy = new MinMax(globalStatus, driver);
     await strategy.generateActions();
-    await strategy.executeActions();
-     */
+    strategy.actions.forEach(action => action.log());
+    console.log(strategy.defenderList);
+    //await strategy.executeActions();
+
     await driver.quit();
 }
 

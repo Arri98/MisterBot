@@ -1,5 +1,7 @@
 const { By, until } = require('selenium-webdriver');
 
+let config = require('../config/config');
+
 async function logIn(driver) {
     try {
         await driver.get('https://mister.mundodeportivo.com/new-onboarding/auth');
@@ -9,15 +11,15 @@ async function logIn(driver) {
 
         await driver.wait(until.elementLocated(By.className('btn btn--capsule btn--plain')), 5000);
         let emailButton = await driver.findElement(By.className('btn btn--capsule btn--plain'));
-        emailButton.click();
+        emailButton.click(config);
 
         await driver.wait(until.elementLocated(By.id('email')), 5000);
         let email = await driver.findElement(By.id('email'));
-        email.sendKeys('');
+        email.sendKeys(config.email);
 
         await driver.wait(until.elementLocated(By.xpath("//input[@type='password']")), 5000);
         let password = await driver.findElement(By.xpath("//input[@type='password']"));
-        password.sendKeys('');
+        password.sendKeys(config.password);
 
         let continueButton = await driver.findElement(By.className('btn btn--capsule btn--primary'));
         continueButton.click();

@@ -9,12 +9,12 @@ async function calendar(driver) {
         let matchdaysList = await matchdays.findElements(By.className('gameweek'));
         for (let i = 0; i < matchdaysList.length; i++) {
             let item = matchdaysList[i];
-            let name = await item.findElement(By.className('gameweek__name')).getAttribute('innerHTML');
-            name = name.trim();
+            let journeyNumber = await item.findElement(By.className('gameweek__name')).getAttribute('innerHTML');
+            journeyNumber = journeyNumber.trim().substring(1);
             let status = await item.findElement(By.className('gameweek__status')).getAttribute('innerHTML');
-            status = status.trim()
-            console.log(`Journey position ${i} number ${name}, status ${status}`);
-            returned.push({i, name, status})
+            status = status.replace(/(\r\n|\n|\r)/gm, "").trim();
+            console.log(`Journey position ${i} number ${journeyNumber}, status ${status}`);
+            returned.push({i, journeyNumber, status})
         }
         return returned;
     } catch (e) {

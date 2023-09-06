@@ -32,7 +32,7 @@ class Standard extends Strategy{
         }
         let j = 0;
         for(let i = listMain.length-1; i >= 0; i--) {
-            if(listMain[i].points < listSub[j].points){
+            if(Number(listMain[i].points) < Number(listSub[j].points)){
                 let temp = listMain[i];
                 listMain[i] = listSub[j];
                 listSub[j] = temp;
@@ -63,23 +63,6 @@ class Standard extends Strategy{
                    return;
                }
            }
-        }
-    }
-
-    fillTeam(listSub, listMain, numberOfPlayers) {
-        let playersToPush = [];
-        let positionsToSplice = 0;
-        if(listMain.length < numberOfPlayers && listSub.length > 0){
-            for(let i = 0; i < (numberOfPlayers - listMain.length); i++){
-                playersToPush.push(listSub[i]);
-                positionsToSplice++;
-            }
-        }
-        playersToPush.forEach(player => {
-            listMain.push(player);
-        });
-        for(let i = 0; i<positionsToSplice; i++){
-            listSub.splice(0,1);
         }
     }
 
@@ -127,10 +110,7 @@ class Standard extends Strategy{
     generateActions(){
         this.globalStatus.temporalMoney = this.globalStatus.money;
         this.sortAllListBy(this.sorters.byPoints);
-        this.fillTeam(this.substituteGoalkeeperList, this.goalkeeperList, this.numberGoalKeepers);
-        this.fillTeam(this.substituteDefenderList, this.defenderList, this.numberDefenders);
-        this.fillTeam(this.substituteMidFieldList, this.midFieldList, this.numberMidfield);
-        this.fillTeam(this.substituteSrikerList, this.strikerList, this.numberStricker);
+        this.fillAll();
         this.sortAllListBy(this.sorters.byPoints);
         this.interchangeSubAndMain(this.goalkeeperList, this.substituteGoalkeeperList);
         this.interchangeSubAndMain(this.defenderList, this.substituteDefenderList);
@@ -147,6 +127,7 @@ class Standard extends Strategy{
         this.signPlayers(this.substituteDefenderList,this.marketDefenderList);
         this.signPlayers(this.substituteGoalkeeperList,this.marketGoalkeeperList);
         this.processOffers();
+
         console.log("Substitutes");
         console.log(this.substituteGoalkeeperList);
         console.log(this.substituteDefenderList);
