@@ -23,7 +23,7 @@ async function getTeam(driver) {
             let price = await player.findElement(By.className('underName')).getAttribute('innerHTML');
             price = price.split('>');
             price = price[2] ? price[2].trim() : price[0];
-            price = price.split('.').join("");
+            price = Number(price.split('.').join(""));
             let upwards = await player.findElements(By.className('value-arrow green'));
             let upwardsValue = upwards.length > 0
             const textUpward = upwardsValue ? 'up' : 'down';

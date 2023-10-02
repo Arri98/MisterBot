@@ -18,11 +18,13 @@ class Strategy {
         this.substituteMidFieldList = [];
         this.marketMidFieldList = [];
         this.strikerList = [];
-        this.substituteSrikerList = [];
+        this.substituteStrikerList = [];
         this.marketStrikerList = [];
         this.temporalMoney = globalStatus.money;
         this.driver = driver;
+        this.dayFlag = 0;
         this.fillLists();
+        this.chechDaysToNextGame();
     };
 
     async executeActions(){
@@ -54,7 +56,7 @@ class Strategy {
                 this.substituteMidFieldList.push(player);
             }
             else if(player.position === 'Striker'){
-                this.substituteSrikerList.push(player);
+                this.substituteStrikerList.push(player);
             }
         });
         this.mainLineup.forEach(player => {
@@ -115,7 +117,7 @@ class Strategy {
         this.substituteMidFieldList.sort(sorter);
         this.marketMidFieldList.sort(sorter);
         this.strikerList.sort(sorter);
-        this.substituteSrikerList.sort(sorter);
+        this.substituteStrikerList.sort(sorter);
         this.marketStrikerList.sort(sorter);
     }
 
@@ -140,8 +142,30 @@ class Strategy {
         this.fillTeam(this.substituteGoalkeeperList, this.goalkeeperList, this.numberGoalKeepers);
         this.fillTeam(this.substituteDefenderList, this.defenderList, this.numberDefenders);
         this.fillTeam(this.substituteMidFieldList, this.midFieldList, this.numberMidfield);
-        this.fillTeam(this.substituteSrikerList, this.strikerList, this.numberStricker);
+        this.fillTeam(this.substituteStrikerList, this.strikerList, this.numberStricker);
     }
+
+    chechDaysToNextGame(){
+        for(let i = 0; i < this.globalStatus.matchdays.length; i++){
+            if(this.globalStatus.matchdays[i] !== -1){
+                this.globalStatus.currentRound = this.globalStatus.matchdays[i].journeyNumber;
+                switch (this.globalStatus.matchdays[i].status){
+                    case 2:
+                        this.dayFlag = 'sell';
+                        break;
+                    case 1:
+                        this.dayFlag = 'accept'
+                        break;
+                    default:
+                        this.dayFlag = 'normal';
+                        break;
+                }
+                this.globalStatus.daysUntilNextRound = this.globalStatus.matchdays[i].status
+            }
+        }
+    }
+
+
 
 
 

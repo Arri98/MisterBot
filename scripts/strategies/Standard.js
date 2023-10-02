@@ -95,9 +95,9 @@ class Standard extends Strategy{
                     }
                 }
             }
-            if(this.substituteSrikerList.length > 1){
-                for(let i = 1; i < this.substituteSrikerList.length; i++){
-                    if(offer.name === this.substituteSrikerList[i].name){
+            if(this.substituteStrikerList.length > 1){
+                for(let i = 1; i < this.substituteStrikerList.length; i++){
+                    if(offer.name === this.substituteStrikerList[i].name){
                         this.actions.push(Action('acceptOffer', {...offer,driver: this.driver }))
                         return;
                     }
@@ -108,43 +108,43 @@ class Standard extends Strategy{
     }
 
     generateActions(){
+        switch (this.dayFlag){
+            case 'normal':
+                this.defaultStrategy();
+                break;
+            case 'sellDay':
+                this.sellDayStrategy();
+                break;
+            case 'accept':
+                this.previousDayStrategy();
+                break;
+        }
+    }
+
+    sellDayStrategy(){}
+
+    previousDayStrategy(){}
+
+    defaultStrategy(){
         this.globalStatus.temporalMoney = this.globalStatus.money;
-        this.sortAllListBy(this.sorters.byPoints);
+        this.sortAllListBy(this.sorters.byPrice);
         this.fillAll();
         this.sortAllListBy(this.sorters.byPoints);
         this.interchangeSubAndMain(this.goalkeeperList, this.substituteGoalkeeperList);
         this.interchangeSubAndMain(this.defenderList, this.substituteDefenderList);
         this.interchangeSubAndMain(this.midFieldList, this.substituteMidFieldList);
-        this.interchangeSubAndMain(this.midFieldList, this.substituteSrikerList);
+        this.interchangeSubAndMain(this.midFieldList, this.substituteStrikerList);
         let lineup = this.goalkeeperList.concat(this.defenderList.concat(this.midFieldList.concat(this.strikerList)))
         this.actions.push(Action('setLineup', {driver: this.driver, lineup: lineup}));
         this.sellSubstitutes(this.substituteGoalkeeperList);
         this.sellSubstitutes(this.substituteDefenderList);
         this.sellSubstitutes(this.substituteMidFieldList);
-        this.sellSubstitutes(this.substituteSrikerList);
-        this.signPlayers(this.substituteSrikerList,this.marketStrikerList);
+        this.sellSubstitutes(this.substituteStrikerList);
+        this.signPlayers(this.substituteStrikerList,this.marketStrikerList);
         this.signPlayers(this.substituteMidFieldList,this.marketMidFieldList);
         this.signPlayers(this.substituteDefenderList,this.marketDefenderList);
         this.signPlayers(this.substituteGoalkeeperList,this.marketGoalkeeperList);
         this.processOffers();
-
-        console.log("Substitutes");
-        console.log(this.substituteGoalkeeperList);
-        console.log(this.substituteDefenderList);
-        console.log(this.substituteMidFieldList);
-        console.log(this.substituteSrikerList);
-        console.log("Main");
-        console.log(this.goalkeeperList);
-        console.log(this.defenderList);
-        console.log(this.midFieldList);
-        console.log(this.strikerList);
-        console.log("Market");
-        console.log(this.marketGoalkeeperList);
-        console.log(this.marketDefenderList);
-        console.log(this.marketMidFieldList);
-        console.log(this.marketStrikerList);
-        console.log("Offers");
-        console.log(this.globalStatus.offers);
     }
 
 }

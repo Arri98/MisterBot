@@ -7,7 +7,7 @@ class Player{
         this.offerList = [];
     }
     rerroll(){
-        this.rerrolButton.click();
+        this.rerrollButton.click();
     }
 }
 
@@ -18,11 +18,11 @@ class Offer{
         this.acceptButton = acceptButton;
         this.rejectButton = rejectButton;
     }
-    accept(){
-        this.acceptButton.click();
+   async accept(){
+       await this.acceptButton.click();
     };
-    reject(){
-        this.rejectButton.click();
+    async reject(){
+        await this.rejectButton.click();
     };
 }
 

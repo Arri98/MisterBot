@@ -22,7 +22,6 @@ let globalStatus = {
 
 async function createBrowserAndExecute () {
     const driver = await createDriver();
-
     await logIn(driver);
     globalStatus.money = await getMoney(driver);
     const offers = await processOffers(driver);
@@ -36,11 +35,9 @@ async function createBrowserAndExecute () {
     const marketResult = await getMarket(driver);
     globalStatus.marketPlayers = marketResult.players;
     globalStatus.futureBalance = marketResult.futureBalance;
-    console.log(globalStatus);
     const strategy = new MinMax(globalStatus, driver);
     await strategy.generateActions();
     strategy.actions.forEach(action => action.log());
-    console.log(strategy.defenderList);
     //await strategy.executeActions();
 
     await driver.quit();

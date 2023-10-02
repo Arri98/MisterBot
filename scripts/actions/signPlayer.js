@@ -23,14 +23,12 @@ async function signPlayer(driver, nameToSign, value) {
                 value = value.toString()
                 inputPrice.clear();
 
-
                 for (let i = 0; i < value.length; i++){
                     inputPrice.sendKeys(value[i]);
                 }
 
                 let moreButton =  await driver.findElement(By.className('btn num-add'));
                 moreButton.click();
-
 
                 await new Promise((r) => setTimeout(r, 1000));
                 let sendButton =  await driver.findElement(By.id('btn-send'));

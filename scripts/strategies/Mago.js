@@ -10,6 +10,25 @@ class Mago extends Strategy{
         this.numberStricker = 3;
         this.driver = driver;
     }
+    chechDaysToNextGame(){
+        for(let i = 0; i < this.globalStatus.matchdays.length; i++){
+            if(this.globalStatus.matchdays[i] !== -1){
+                this.globalStatus.currentRound = this.globalStatus.matchdays[i].journeyNumber;
+                switch (this.globalStatus.matchdays[i].status){
+                    case 3:
+                        this.dayFlag = 'sell';
+                        break;
+                    case 2:
+                        this.dayFlag = 'accept'
+                        break;
+                    case 1:
+                        this.dayFlag = 'magic';
+                        break;
+                }
+                this.dayFlag = this.globalStatus.matchdays[i].status;
+            }
+        }
+    }
 
 }
 

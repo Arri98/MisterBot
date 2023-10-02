@@ -11,7 +11,7 @@ async function logIn(driver) {
 
         await driver.wait(until.elementLocated(By.className('btn btn--capsule btn--plain')), 5000);
         let emailButton = await driver.findElement(By.className('btn btn--capsule btn--plain'));
-        emailButton.click(config);
+        emailButton.click();
 
         await driver.wait(until.elementLocated(By.id('email')), 5000);
         let email = await driver.findElement(By.id('email'));
